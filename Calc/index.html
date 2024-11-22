@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .calculator {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 320px; /* Adjusted for smaller size */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .display {
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            font-size: 30px;
+            text-align: right;
+            border-radius: 5px;
+            height: 60px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .button {
+            background-color: #e4e4e4;
+            padding: 20px;
+            font-size: 18px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #ccc;
+        }
+        .button:active {
+            background-color: #aaa;
+        }
+        .button:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+        /* Responsive Design for smaller screens */
+        @media (max-width: 400px) {
+            .calculator {
+                width: 280px;
+            }
+            .display {
+                font-size: 26px;
+                padding: 15px;
+            }
+            .button {
+                font-size: 16px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <div class="button" id="ac">AC</div>
+            <div class="button" id="del">DEL</div>
+            <div class="button" id="sqrt">√</div>
+            <div class="button" id="divide">/</div>
+
+            <div class="button" id="7">7</div>
+            <div class="button" id="8">8</div>
+            <div class="button" id="9">9</div>
+            <div class="button" id="multiply">*</div>
+
+            <div class="button" id="4">4</div>
+            <div class="button" id="5">5</div>
+            <div class="button" id="6">6</div>
+            <div class="button" id="minus">-</div>
+
+            <div class="button" id="1">1</div>
+            <div class="button" id="2">2</div>
+            <div class="button" id="3">3</div>
+            <div class="button" id="plus">+</div>
+
+            <div class="button" id="0">0</div>
+            <div class="button" id="dot">.</div>
+            <div class="button" id="equals">=</div>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '0';
+        let lastResult = '';
+
+        // Update the display
+        function updateDisplay(value) {
+            if (currentInput === '0' && value !== '.' && value !== '-') {
+                currentInput = value;
+            } else {
+                currentInput += value;
+            }
+            display.textContent = currentInput;
+        }
+
+        // Handle button clicks
+        document.querySelectorAll('.button').forEach(button => {
+            button.addEventListener('click', function() {
+                const value = this.id;
+                if (value === 'ac') {
+                    currentInput = '0';
+                    display.textContent = currentInput;
+                } else if (value === 'del') {
+                    currentInput = currentInput.slice(0, -1) || '0';
+                    display.textContent = currentInput;
+                } else if (value === 'equals') {
+                    try {
+                        currentInput = eval(currentInput).toString();
+                        display.textContent = currentInput;
+                    } catch (e) {
+                        display.textContent = 'Error';
+                    }
+                } else if (value === 'sqrt') {
+                    currentInput = Math.sqrt(parseFloat(currentInput)).toString();
+                    display.textContent = currentInput;
+                } else {
+                    updateDisplay(this.textContent);
+                }
+            });
+        });
+
+        // Handle keyboard events
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') {
+                updateDisplay(e.key);
+            } else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+                updateDisplay(e.key);
+            } else if (e.key === 'Backspace') {
+                currentInput = currentInput.slice(0, -1) || '0';
+                display.textContent = currentInput;
+            } else if (e.key === 'Enter') {
+                try {
+                    currentInput = eval(currentInput).toString();
+                    display.textContent = currentInput;
+                } catch (e) {
+                    display.textContent = 'Error';
+                }
+            } else if (e.key === 'Escape') {
+                currentInput = '0';
+                display.textContent = currentInput;
+            } else if (e.key === '.') {
+                updateDisplay('.');
+            } else if (e.key === 's' || e.key === 'S') {  // For square root 'S' key
+                currentInput = Math.sqrt(parseFloat(currentInput)).toString();
+                display.textContent = currentInput;
+            }
+        });
+    </script>
+</body>
+</html>
